@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react';
-import productApi from './api/productApi';
-import './App.css';
-import Button from '@mui/material/Button';
-import {
-  Routes,
-  Route,
-} from "react-router-dom";
-import Home from './pages/home/Home';
-import Header from './components/common/Header';
+import React from "react";
+import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/home/Home";
+import Header from "./components/common/Header";
+import Login from "./pages/login/Login";
+
 
 function App() {
 
@@ -15,7 +12,8 @@ function App() {
     <div className="App">
       <Header />
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
   );
