@@ -11,6 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -54,6 +55,7 @@ function Login() {
         onSubmit={handleSubmit}
       >
         <h2>Đăng nhập</h2>
+        
         <TextField
           id="standard-basic"
           label="Tên tài khoản"
@@ -85,6 +87,9 @@ function Login() {
             }
           />
         </FormControl>
+        <Box sx={{display: "flex"}}>
+          <p>Bạn chưa có tài khoản?</p><Link to="/signup" style={{ textDecoration: 'none' }}>&nbsp; Đăng ký</Link>
+        </Box>
         <Button
           variant="contained"
           color="error"
