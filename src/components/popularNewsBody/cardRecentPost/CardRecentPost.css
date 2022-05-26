@@ -1,0 +1,34 @@
+.container-card:hover {
+  cursor: pointer;
+}
+.image-card {
+  width: 98px;
+  height: 80px;
+  -webkit-filter: brightness(100%);
+}
+.image-card:hover {
+  -webkit-filter: brightness(150%);
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -ms-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+.author-card {
+  font-weight: 700;
+  font-size: 13px;
+  color: #c00 !important;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.title-card {
+  font-weight: 700;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  transition: 0.4s;
+  color: black !important;
+}
+.container-card .title-card:hover {
+  color: #c00 !important;
+}
