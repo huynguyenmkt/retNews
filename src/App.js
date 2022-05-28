@@ -7,7 +7,8 @@ import Login from './pages/login/Login'
 import SignUp from './pages/login/SignUp'
 import { ToastContainer } from 'react-toastify'
 import Footer from './components/common/Footer'
-
+import 'react-toastify/dist/ReactToastify.css';
+import PrivateRoute from './PrivateRoute'
 function App() {
   return (
     <div className="App">
@@ -16,9 +17,24 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path='/profile' element={
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        } />
       </Routes>
       <Footer />
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   )
 }
