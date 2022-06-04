@@ -37,11 +37,16 @@ export const userSlice = createSlice({
             let newUser = {}
             localStorage.setItem('user', JSON.stringify(newUser))
             return newUser
+        },
+        editUser: (state, action) => {
+            let editUser = { ...state, ...action.payload }
+            localStorage.setItem('user', JSON.stringify(editUser))
+            return editUser
         }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { addUser, delUser } = userSlice.actions
+export const { addUser, delUser, editUser } = userSlice.actions
 
 export default userSlice.reducer

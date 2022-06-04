@@ -9,7 +9,12 @@ import { ToastContainer } from 'react-toastify'
 import Footer from './components/common/Footer'
 import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from './PrivateRoute'
+import { getAuthorFavorite } from './services/authorService'
+import { useSelector } from 'react-redux'
+import Profile from './pages/user/Profile'
 function App() {
+  const user = useSelector(state => state.user)
+  getAuthorFavorite(user.dataToken)
   return (
     <div className="App">
       <Header />
@@ -19,7 +24,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path='/profile' element={
           <PrivateRoute>
-            <Home />
+            <Profile />
           </PrivateRoute>
         } />
       </Routes>

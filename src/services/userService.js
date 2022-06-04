@@ -18,7 +18,41 @@ export async function login(userName, password) {
     });
     return response.json();
 }
-
+export async function singup(newUser) {
+    const userEnum = {
+        name: newUser.name,
+        gender: newUser.sex,
+        phone: newUser.phone,
+        email: newUser.email,
+        avata: newUser.avatar,
+        username: newUser.userName,
+        password: newUser.password,
+        role: 2
+    }
+    const response = await axios.post(`${baseURL}/User/CreateUser`, userEnum, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.data
+}
+export async function edit(newUser, id, accessToken) {
+    const userEnum = {
+        name: newUser.name,
+        gender: newUser.sex,
+        phone: newUser.phone,
+        email: newUser.email,
+        avata: newUser.avatar,
+        username: newUser.userName,
+    }
+    const response = await axios.put(`${baseURL}/User/EditAccount/${id}`, userEnum, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    });
+    return response.data
+}
 export async function getAllUser() {
     const response = await axios.get(`${baseURL}/User`, {
         headers: {

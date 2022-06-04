@@ -83,7 +83,11 @@ function Header(props) {
               }}
             >
               {pages.map((page, index) => (
-                <Link to={`${url[index]}`} style={{ textDecoration: 'none' }}>
+                <Link
+                  key={page}
+                  to={`${url[index]}`}
+                  style={{ textDecoration: 'none' }}
+                >
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
@@ -105,7 +109,11 @@ function Header(props) {
             }}
           >
             {pages.map((page, index) => (
-              <Link to={`${url[index]}`} style={{ textDecoration: 'none' }}>
+              <Link
+                key={page}
+                to={`${url[index]}`}
+                style={{ textDecoration: 'none' }}
+              >
                 <Button
                   key={page}
                   onClick={handleCloseNavMenu}
