@@ -88,7 +88,7 @@ function ManagerHome(props) {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
+        <Toolbar sx={{ backgroundColor: '#a30000' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"

@@ -61,3 +61,17 @@ export async function getAllUser() {
     });
     return response.data
 }
+
+export async function getUserById(id) {
+    const response = await axios.get(`${baseURL}/User/get/${id}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = response.data
+    if (data.result) {
+        return data.data
+    } else {
+        return { name: "không tìm thấy!" }
+    }
+}
