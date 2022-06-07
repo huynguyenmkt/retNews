@@ -7,10 +7,11 @@ import Login from './pages/login/Login'
 import SignUp from './pages/login/SignUp'
 import { ToastContainer } from 'react-toastify'
 import Footer from './components/common/Footer'
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
 import PrivateRoute from './PrivateRoute'
 import Profile from './pages/user/Profile'
 import ManagerHome from './pages/manager/ManagerHome'
+import ArticleDetail from './pages/article/ArticleDetail'
 function App() {
   // const user = useSelector(state => state.user)
   // getAuthorFavorite(user.dataToken)
@@ -22,12 +23,23 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path='/profile' element={
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        } />
-        <Route path="/manager" element={<ManagerHome />} />
+        <Route path="/article/:id" element={<ArticleDetail />} />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/manager"
+          element={
+            <PrivateRoute>
+              <ManagerHome />
+            </PrivateRoute>
+          }
+        />
       </Routes>
       {location.pathname !== '/manager' && <Footer />}
 
