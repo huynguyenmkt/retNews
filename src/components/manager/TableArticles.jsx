@@ -16,7 +16,7 @@ const columns = [
     width: 150,
   },
 ]
-function TableArticles({ onChangeSelected }) {
+function TableArticles({ onChangeSelected, refreshTable }) {
   const [articles, setArticles] = useState([])
 
   const getArticles = async () => {
@@ -46,7 +46,7 @@ function TableArticles({ onChangeSelected }) {
   }
   useEffect(() => {
     getArticles()
-  }, [])
+  }, [refreshTable])
 
   const rows = articles.map((article) => {
     // console.log(author)
@@ -62,7 +62,7 @@ function TableArticles({ onChangeSelected }) {
         height: 500,
         width: '100%',
         margin: 'auto',
-        maxWidth: '1210px',
+        maxWidth: '1220px',
       }}
     >
       <DataGrid

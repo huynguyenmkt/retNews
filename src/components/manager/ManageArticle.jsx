@@ -14,13 +14,14 @@ import TableArticles from './TableArticles'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 import SaveArticle from './SaveArticle'
 import { deleteArticle } from '../../services/articleService'
-import { ResetTvOutlined } from '@mui/icons-material'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
 
 function ManageArticle(props) {
+  const user = useSelector((state) => state.user)
   const [arena, setArena] = useState('table')
   const [selectedArticles, setSelectedArticles] = useState([])
-
+  const [refreshTable, setRefreshTable] = useState(false)
   const isPermisssionEdit = selectedArticles.length === 1
   const isPermissionDel = selectedArticles.length >= 1
   // console.log(selectedArticles)
@@ -33,33 +34,32 @@ function ManageArticle(props) {
     setArena('table')
   }
   const handleDeleteArticles = async () => {
-    // for (let id of selectedArticles) {
-    //   const data = await deleteArticle(id)
-    //   if (data.result) {
-    //     toast.success(data.message, {
-    //       position: 'top-center',
-    //       autoClose: 3000,
-    //       hideProgressBar: false,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       progress: undefined,
-    //     })
-    //   } else {
-    //     toast.error(data.message, {
-    //       position: 'top-center',
-    //       autoClose: 3000,
-    //       hideProgressBar: false,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       progress: undefined,
-    //     })
-    //   }
-    // }
-    // setSelectedArticles([])
-    const response = await deleteArticle(8)
-    console.log(response)
+    for (let id of selectedArticles) {
+      const data = await deleteArticle(id, user.dataToken)
+      if (data.result) {
+        toast.success(`[id: ${id}]: ${data.message}`, {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
+      } else {
+        toast.error(`[id: ${id}]: ${data.message}`, {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
+      }
+    }
+    setSelectedArticles([])
+    setRefreshTable(!refreshTable)
   }
   return (
     <>
@@ -73,7 +73,10 @@ function ManageArticle(props) {
         </IconButton>
       )}
       {arena === 'table' && (
-        <TableArticles onChangeSelected={handleChangeSelectedArticles} />
+        <TableArticles
+          onChangeSelected={handleChangeSelectedArticles}
+          refreshTable={refreshTable}
+        />
       )}
       {arena === 'add' && <SaveArticle onBack={handleBack} />}
       {arena === 'edit' && (

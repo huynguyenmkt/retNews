@@ -51,32 +51,11 @@ export async function editArticle(article, id, accessToken) {
 }
 
 export async function deleteArticle(id, accessToken) {
-    const response = await axios.delete(`${baseURL}/Articles`, {
-        params: {
-            id_art: id
-        }
-    }, {
+    const response = await axios.delete(`${baseURL}/Articles?id_art=${id}`, {
         headers: {
-            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + accessToken
         }
     });
     return response.data
 }
-
-// export async function deleteArticle(id, accessToken) {
-//     const response = await fetch(`${baseURL}/Articles?id_art=${id}`, {
-//         method: 'DELETE',
-//         mode: 'cors',
-//         cache: 'no-cache',
-//         credentials: 'same-origin',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': 'Bearer ' + accessToken,
-//             'Access-Control-Allow-Origin': '*',
-//         }
-//     });
-
-//     return response
-// }
