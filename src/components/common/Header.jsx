@@ -50,7 +50,7 @@ function Header(props) {
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Link to="/">
-              <img src="./logo.jpg" alt="logo.jpg" />
+              <img src="/logo.jpg" alt="logo.jpg" />
             </Link>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
