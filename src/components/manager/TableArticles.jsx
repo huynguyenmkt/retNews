@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from '@mui/x-data-grid'
 import { getAllArticles } from '../../services/articleService'
 import { toast } from 'react-toastify'
 import { getUserById } from '../../services/userService'
@@ -16,6 +20,17 @@ const columns = [
     width: 150,
   },
 ]
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport
+        csvOptions={{ utf8WithBom: true, delimiter: '   ' }}
+        printOptions={{ allColumns: true }}
+      />
+    </GridToolbarContainer>
+  )
+}
+
 function TableArticles({ onChangeSelected, refreshTable }) {
   const [articles, setArticles] = useState([])
 
@@ -72,6 +87,9 @@ function TableArticles({ onChangeSelected, refreshTable }) {
         rowsPerPageOptions={[8]}
         onSelectionModelChange={onChangeSelected}
         checkboxSelection
+        components={{
+          Toolbar: CustomToolbar,
+        }}
       />
     </div>
   )

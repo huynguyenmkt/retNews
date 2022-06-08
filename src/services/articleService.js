@@ -23,7 +23,8 @@ export async function createArticle(idUser, article, accessToken) {
         contentArticles: article.contentArticles,
         idUser: idUser,
         status: "hoàn thành",
-        image: article.image
+        image: article.image,
+        listCategory: article.listCategory
     }
     const response = await axios.post(`${baseURL}/Articles/create`, articleEnum, {
         headers: {
@@ -39,7 +40,8 @@ export async function editArticle(article, id, accessToken) {
         title: article.title,
         contentArticles: article.contentArticles,
         status: "Đã hoàn thành",
-        image: article.image
+        image: article.image,
+        listCategory: article.listCategory
     }
     const response = await axios.put(`${baseURL}/Articles/Edit/${id}`, articleEnum, {
         headers: {

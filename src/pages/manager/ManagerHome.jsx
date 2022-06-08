@@ -23,6 +23,8 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
 import Report from '../../components/manager/Report'
 import ManageArticle from '../../components/manager/ManageArticle'
 import ManageReader from '../../components/manager/ManageReader'
+import CategoryIcon from '@mui/icons-material/Category'
+import ManageCategory from '../../components/manager/ManageCategory'
 
 const drawerWidth = 240
 
@@ -143,6 +145,14 @@ function ManagerHome(props) {
               <ListItemText primary="Quản lý bài viết" />
             </ListItemButton>
           </ListItem>
+          <ListItem onClick={() => setPage('manageCategory')} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <CategoryIcon />
+              </ListItemIcon>
+              <ListItemText primary="Quản lý thể loại bài viết" />
+            </ListItemButton>
+          </ListItem>
           <ListItem onClick={() => setPage('manageReader')} disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -159,6 +169,7 @@ function ManagerHome(props) {
         {page === 'report' && <Report />}
         {page === 'manageArticle' && <ManageArticle />}
         {page === 'manageReader' && <ManageReader />}
+        {page === 'manageCategory' && <ManageCategory />}
       </Main>
     </Box>
   )
