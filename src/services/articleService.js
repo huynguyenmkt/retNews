@@ -9,6 +9,14 @@ export async function getAllArticles() {
     });
     return response.data
 }
+export async function getTopArticles() {
+    const response = await axios.get(`${baseURL}/Articles/getTopView`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.data
+}
 export async function getArticleById(id) {
     const response = await axios.get(`${baseURL}/Articles/get/${id}`, {
         headers: {

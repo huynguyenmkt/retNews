@@ -1,11 +1,13 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 function SliderItem({
   backgroundImage,
   title,
   author,
   stylePost = { height: '500px', titleType: 'h3' },
+  idArticle = '0',
 }) {
   return (
     <Box
@@ -31,22 +33,24 @@ function SliderItem({
           justifyContent: 'flex-end',
         }}
       >
-        <Typography
-          variant={stylePost.titleType}
-          gutterBottom
-          component="div"
-          sx={{ color: 'white', ml: 2 }}
-        >
-          {title}
-        </Typography>
-        <Typography
-          variant="caption"
-          display="block"
-          gutterBottom
-          sx={{ color: 'white', ml: 2 }}
-        >
-          by {author}
-        </Typography>
+        <Link to={`/article/${idArticle}`} style={{ textDecoration: 'none' }}>
+          <Typography
+            variant={stylePost.titleType}
+            gutterBottom
+            component="div"
+            sx={{ color: 'white', ml: 2 }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="caption"
+            display="block"
+            gutterBottom
+            sx={{ color: 'white', ml: 2 }}
+          >
+            by {author}
+          </Typography>
+        </Link>
       </Box>
     </Box>
   )

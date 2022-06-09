@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import FacebookIcon from '@mui/icons-material/Facebook'
@@ -17,9 +17,84 @@ import TelegramIcon from '@mui/icons-material/Telegram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import AddCommentIcon from '@mui/icons-material/AddComment'
 import { blue, green } from '@mui/material/colors'
+import { getArticleById } from '../../services/articleService'
+import { getUserById } from '../../services/userService'
+import {
+  createComment,
+  getAllCommentByArticle,
+} from '../../services/commentService'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 function ArticleDetail(props) {
+  const user = useSelector((state) => state.user)
+  const isExitUser = Object.keys(user).length > 0
   let { id } = useParams()
+  const [article, setArticle] = useState()
+  const [comments, setComments] = useState([])
+  const [contentComment, setContentComment] = useState('')
+  //get data
+  const getArticle = async (id) => {
+    const data = await getArticleById(id)
+    if (data.result) {
+      let article = data.data
+      const user = await getUserById(article.idUser)
+      setArticle({ ...article, author: user })
+    }
+  }
+  const getComments = async (idArticle) => {
+    const data = await getAllCommentByArticle(idArticle)
+    if (data.result) {
+      let newComments = []
+      for (const comment of data.data) {
+        const user = await getUserById(comment.idUser)
+        newComments.push({ ...comment, user })
+      }
+      setComments(newComments)
+    }
+  }
+
+  useEffect(() => {
+    if (article) {
+      getComments(article.idArticles)
+    }
+  }, [article])
+
+  useEffect(() => {
+    getArticle(id)
+  }, [id])
+  // console.log(comments)
+  //handles
+  const handleSubmit = async () => {
+    const res = await createComment(
+      user.idUser,
+      article.idArticles,
+      contentComment,
+      user.dataToken
+    )
+    console.log(res)
+    if (res.result) {
+      toast.success(`${res.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    } else {
+      toast.error(`${res.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
+  }
   return (
     <Container maxWidth="lg" sx={{ marginTop: '50px' }}>
       {/* title */}
@@ -32,7 +107,7 @@ function ArticleDetail(props) {
           fontSize: '2.75rem',
         }}
       >
-        How to become a professional travel blogger
+        {article ? article.title : 'Không có tiêu đề'}
       </h1>
       {/* end title */}
       <Divider variant="middle" sx={{ marginY: '20px' }} />
@@ -50,14 +125,19 @@ function ArticleDetail(props) {
           sx={{ marginRight: '10px' }}
         />
         <Typography variant="subtitle1" gutterBottom component="div">
-          By John Doe, Descember 09, 2016 In Business
+          {article
+            ? ` By ${article.author.name}, ${article.dateSubmitted.slice(
+                0,
+                10
+              )}`
+            : 'Không có tác giả'}
         </Typography>
       </Box>
       {/* end author */}
       {/* image article */}
       <Box sx={{ marginY: '20px' }}>
         <img
-          src="https://loremflickr.com/1920/960"
+          src={article ? article.image : ''}
           alt="anh.jpg"
           style={{ width: '100%' }}
         />
@@ -74,7 +154,7 @@ function ArticleDetail(props) {
           marginRight: '5px',
         }}
       >
-        150
+        {article ? article.views : '0'}
         <Typography variant="subtitle2" gutterBottom component="div">
           views
         </Typography>
@@ -101,28 +181,7 @@ function ArticleDetail(props) {
             },
           }}
         >
-          Even the all-powerful Pointing has no control about the blind texts it
-          is an almost unorthographic life One day however a small line of blind
-          text by the name of Lorem Ipsum decided to leave for the far World of
-          Grammar. Far far away, behind the word mountains, far from the
-          countries Vokalia and Consonantia, there live the blind texts.
-          Separated they live in Bookmarksgrove right at the coast of the
-          Semantics, a large language ocean. A small river named Duden flows by
-          their place and supplies it with the necessary regelialia. The Big
-          Oxmox advised her not to do so, because there were thousands of bad
-          Commas, wild Question Marks and devious Semikoli, but the Little Blind
-          Text didn't listen. On her way she met a copy. The copy warned the
-          Little Blind Text, that where it came from it would have been
-          rewritten a thousand times and everything that was left from its
-          origin would be the word “and” and the Little Blind Text should turn
-          around and return to its own, safe country. The Big Oxmox advised her
-          not to do so, because there were thousands of bad Commas, wild
-          Question Marks and devious Semikoli, but the Little Blind Text didn't
-          listen. On her way she met a copy. The copy warned the Little Blind
-          Text, that where it came from it would have been rewritten a thousand
-          times and everything that was left from its origin would be the word
-          “and” and the Little Blind Text should turn around and return to its
-          own, safe country.
+          {article ? article.contentArticles : ''}
         </Typography>
       </Box>
       {/* end content article */}
@@ -163,7 +222,7 @@ function ArticleDetail(props) {
       >
         <Avatar
           alt="Cindy Baker"
-          src="/static/images/avatar/3.jpg"
+          src={article ? article.author.avata : ''}
           sx={{ width: 56, height: 56, margin: '10px', flexGrow: 0 }}
         />
         <Box sx={{ flexGrow: 1 }}>
@@ -193,7 +252,7 @@ function ArticleDetail(props) {
               color: '#000',
             }}
           >
-            Jhon Doe
+            {article ? article.author.name : ''}
           </Typography>
           <Box
             sx={{
@@ -230,78 +289,30 @@ function ArticleDetail(props) {
         >
           Comments:
         </Typography>
-        {/* Comment item */}
-        <Box sx={{ marginBottom: '30px' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              columnGap: '10px',
-            }}
-          >
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-            <Typography variant="h6" gutterBottom component="div">
-              Sinmun
+        {comments.map((comment) => (
+          <Box sx={{ marginBottom: '30px' }} key={comment.idComment}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                columnGap: '10px',
+              }}
+            >
+              <Avatar alt="Travis Howard" src={comment.user.avata} />
+              <Typography variant="h6" gutterBottom component="div">
+                {comment.user.name}
+              </Typography>
+            </Box>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              component="div"
+              sx={{ paddingLeft: '49px' }}
+            >
+              {comment.contentComment}
             </Typography>
           </Box>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            component="div"
-            sx={{ paddingLeft: '49px' }}
-          >
-            subtitle1. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Quos blanditiis tenetur
-          </Typography>
-        </Box>
-        {/* Comment item */}
-        <Box sx={{ marginBottom: '30px' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              columnGap: '10px',
-            }}
-          >
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-            <Typography variant="h6" gutterBottom component="div">
-              Sinmun
-            </Typography>
-          </Box>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            component="div"
-            sx={{ paddingLeft: '49px' }}
-          >
-            subtitle1. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Quos blanditiis tenetur
-          </Typography>
-        </Box>
-        {/* Comment item */}
-        <Box sx={{ marginBottom: '30px' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              columnGap: '10px',
-            }}
-          >
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-            <Typography variant="h6" gutterBottom component="div">
-              Sinmun
-            </Typography>
-          </Box>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            component="div"
-            sx={{ paddingLeft: '49px' }}
-          >
-            subtitle1. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Quos blanditiis tenetur
-          </Typography>
-        </Box>
+        ))}
       </Box>
       {/* end Comments */}
       {/* post comment */}
@@ -331,12 +342,21 @@ function ArticleDetail(props) {
         >
           Enter your comment:
         </Typography>
-        <TextField id="outlined-textarea" label="Comment" multiline rows={5} />
+        <TextField
+          id="outlined-textarea"
+          label="Comment"
+          multiline
+          rows={5}
+          value={contentComment}
+          onChange={(e) => setContentComment(e.target.value)}
+        />
         <Button
           variant="contained"
           startIcon={<AddCommentIcon />}
           color="error"
           sx={{ marginTop: '10px' }}
+          disabled={!isExitUser}
+          onClick={handleSubmit}
         >
           Add comment
         </Button>
