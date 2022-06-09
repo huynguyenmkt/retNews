@@ -17,7 +17,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Fab,
   TextField,
@@ -173,7 +172,6 @@ function ManageCategory(props) {
   const handleChangeInputNewCategory = (e) => {
     setInputNewCategory(e.target.value)
   }
-  const handleBack = () => {}
   return (
     <div
       style={{ height: 600, width: '100%', margin: 'auto', maxWidth: '570px' }}
@@ -223,7 +221,7 @@ function ManageCategory(props) {
             label="Tên thể loại:"
             fullWidth
             variant="standard"
-            autoComplete={false}
+            autoComplete="off"
             value={inputNewCategory}
             onChange={handleChangeInputNewCategory}
           />

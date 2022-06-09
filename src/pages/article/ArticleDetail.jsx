@@ -3,7 +3,12 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
+  IconButton,
   TextField,
   Typography,
 } from '@mui/material'
@@ -21,18 +26,31 @@ import { getArticleById } from '../../services/articleService'
 import { getUserById } from '../../services/userService'
 import {
   createComment,
+  deleteComment,
+  editComment,
   getAllCommentByArticle,
 } from '../../services/commentService'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-
+import { getAllCategory } from '../../services/categoryService'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 function ArticleDetail(props) {
   const user = useSelector((state) => state.user)
-  const isExitUser = Object.keys(user).length > 0
   let { id } = useParams()
   const [article, setArticle] = useState()
   const [comments, setComments] = useState([])
   const [contentComment, setContentComment] = useState('')
+  const [listCategory, setListCategory] = useState([])
+  const [refresh, setRefresh] = useState(false)
+  const [open, setOpen] = React.useState(false)
+  //check permission comment of user
+  const isExitUser = Object.keys(user).length > 0
+  const hasComment = comments.find((comment) => comment.idUser === user.idUser)
+    ? true
+    : false
+  const [commentEdit, setCommentEdit] = useState('')
+  const permissionComment = isExitUser && !hasComment
   //get data
   const getArticle = async (id) => {
     const data = await getArticleById(id)
@@ -50,21 +68,47 @@ function ArticleDetail(props) {
         const user = await getUserById(comment.idUser)
         newComments.push({ ...comment, user })
       }
+      const userComment = newComments.find(
+        (comment) => comment.idUser === user.idUser
+      )
+      if (userComment) {
+        newComments = newComments.filter(
+          (comment) => comment.idComment !== userComment.idComment
+        )
+        newComments.unshift(userComment)
+      }
       setComments(newComments)
+      setCommentEdit(newComments[0].contentComment)
     }
   }
-
+  const getCategorys = async (article) => {
+    const data = await getAllCategory()
+    if (data.result) {
+      let newListCategory = data.data
+      newListCategory = newListCategory.filter((category) =>
+        article.listCategory.find((item) => item === category.idCategory)
+      )
+      setListCategory(newListCategory)
+    }
+  }
   useEffect(() => {
     if (article) {
       getComments(article.idArticles)
+      getCategorys(article)
     }
-  }, [article])
+  }, [article, refresh])
 
   useEffect(() => {
     getArticle(id)
   }, [id])
-  // console.log(comments)
   //handles
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   const handleSubmit = async () => {
     const res = await createComment(
       user.idUser,
@@ -72,7 +116,6 @@ function ArticleDetail(props) {
       contentComment,
       user.dataToken
     )
-    console.log(res)
     if (res.result) {
       toast.success(`${res.message}`, {
         position: 'top-center',
@@ -83,8 +126,65 @@ function ArticleDetail(props) {
         draggable: true,
         progress: undefined,
       })
+      setRefresh(!refresh)
+      setContentComment('')
     } else {
       toast.error(`${res.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
+  }
+  const handleDeleteComment = async (id) => {
+    const data = await deleteComment(id, user.dataToken)
+    if (data.result) {
+      toast.success(`${data.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+      setRefresh(!refresh)
+    } else {
+      toast.error(`${data.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
+  }
+  const handleEditComment = async () => {
+    const data = await editComment(
+      comments[0].idComment,
+      commentEdit,
+      user.dataToken
+    )
+    if (data.result) {
+      toast.success(`${data.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+      setRefresh(!refresh)
+      setOpen(false)
+    } else {
+      toast.error(`${data.message}`, {
         position: 'top-center',
         autoClose: 3000,
         hideProgressBar: false,
@@ -121,12 +221,12 @@ function ArticleDetail(props) {
       >
         <Avatar
           alt="Remy Sharp"
-          src="/static/images/avatar/1.jpg"
+          src={article ? article.author.avata : ''}
           sx={{ marginRight: '10px' }}
         />
         <Typography variant="subtitle1" gutterBottom component="div">
           {article
-            ? ` By ${article.author.name}, ${article.dateSubmitted.slice(
+            ? ` Tác giả: ${article.author.name}, ${article.dateSubmitted.slice(
                 0,
                 10
               )}`
@@ -156,7 +256,7 @@ function ArticleDetail(props) {
       >
         {article ? article.views : '0'}
         <Typography variant="subtitle2" gutterBottom component="div">
-          views
+          lượt xem
         </Typography>
       </Box>
       {/* end views */}
@@ -195,18 +295,11 @@ function ArticleDetail(props) {
         }}
       >
         <LocalOfferIcon color="error" />
-        <Button variant="outlined" color="error">
-          Outlined
-        </Button>
-        <Button variant="outlined" color="error">
-          Outlined
-        </Button>
-        <Button variant="outlined" color="error">
-          Outlined
-        </Button>
-        <Button variant="outlined" color="error">
-          Outlined
-        </Button>
+        {listCategory.map((category) => (
+          <Button variant="outlined" color="error" key={category.idCategory}>
+            {category.title}
+          </Button>
+        ))}
       </Box>
       {/* end tags */}
       {/* info author */}
@@ -240,7 +333,7 @@ function ArticleDetail(props) {
               marginBottom: '5px',
             }}
           >
-            Author
+            Tác Giả
           </Typography>
           <Typography
             variant="h4"
@@ -272,7 +365,6 @@ function ArticleDetail(props) {
       </Box>
       {/* end info author */}
       {/* Comments */}
-
       <Box sx={{ width: '70%', margin: '10px auto' }}>
         <Typography
           variant="h3"
@@ -287,9 +379,9 @@ function ArticleDetail(props) {
             color: '#000',
           }}
         >
-          Comments:
+          Bình Luận:
         </Typography>
-        {comments.map((comment) => (
+        {comments.map((comment, index) => (
           <Box sx={{ marginBottom: '30px' }} key={comment.idComment}>
             <Box
               sx={{
@@ -311,6 +403,33 @@ function ArticleDetail(props) {
             >
               {comment.contentComment}
             </Typography>
+            {hasComment && index === 0 && (
+              <Box
+                sx={{
+                  marginLeft: '45px',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  columnGap: '20px',
+                }}
+              >
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                  onClick={handleClickOpen}
+                >
+                  <EditOutlinedIcon />
+                </IconButton>
+                <IconButton
+                  color="error"
+                  aria-label="upload picture"
+                  component="span"
+                  onClick={() => handleDeleteComment(comment.idComment)}
+                >
+                  <DeleteOutlineIcon />
+                </IconButton>
+              </Box>
+            )}
           </Box>
         ))}
       </Box>
@@ -327,6 +446,16 @@ function ArticleDetail(props) {
           flexDirection: 'column',
         }}
       >
+        {!isExitUser && (
+          <Typography
+            variant="caption"
+            display="block"
+            gutterBottom
+            color="error"
+          >
+            Vui lòng đăng nhập để bình luận!
+          </Typography>
+        )}
         <Typography
           variant="h3"
           gutterBottom
@@ -340,11 +469,11 @@ function ArticleDetail(props) {
             color: '#000',
           }}
         >
-          Enter your comment:
+          Nhập bình luận của bạn:
         </Typography>
         <TextField
           id="outlined-textarea"
-          label="Comment"
+          label="Bình luận"
           multiline
           rows={5}
           value={contentComment}
@@ -355,13 +484,34 @@ function ArticleDetail(props) {
           startIcon={<AddCommentIcon />}
           color="error"
           sx={{ marginTop: '10px' }}
-          disabled={!isExitUser}
+          disabled={!permissionComment}
           onClick={handleSubmit}
         >
-          Add comment
+          Thêm bình luận
         </Button>
       </Box>
       {/* end post comment */}
+      {/* Dialog */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Chỉnh sửa nội dung bình luận</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="comment"
+            label="Nội dung bình luận"
+            fullWidth
+            variant="standard"
+            value={commentEdit}
+            onChange={(e) => setCommentEdit(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Hủy</Button>
+          <Button onClick={handleEditComment}>Lưu</Button>
+        </DialogActions>
+      </Dialog>
+      {/* end Dialog */}
     </Container>
   )
 }
