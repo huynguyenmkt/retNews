@@ -13,6 +13,7 @@ import Profile from './pages/user/Profile'
 import ManagerHome from './pages/manager/ManagerHome'
 import ArticleDetail from './pages/article/ArticleDetail'
 import Category from './pages/category/Category'
+import AuthorFavourite from './pages/author/AuthorFavourite'
 function App() {
   // const user = useSelector(state => state.user)
   // getAuthorFavorite(user.dataToken)
@@ -25,7 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/article/:id" element={<ArticleDetail />} />
-        <Route path="/category/:id" element={<Category />} />
+        <Route path="/category/:category/:id" element={<Category />} />
         <Route
           path="/profile"
           element={
@@ -39,6 +40,14 @@ function App() {
           element={
             <PrivateRoute>
               <ManagerHome />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/author-favourite"
+          element={
+            <PrivateRoute>
+              <AuthorFavourite />
             </PrivateRoute>
           }
         />

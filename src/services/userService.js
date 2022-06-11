@@ -75,3 +75,28 @@ export async function getUserById(id) {
         return { name: "không tìm thấy!" }
     }
 }
+
+
+export async function createAuthorFavourite(idAuthor, idUser, accessToken) {
+    const authorFavouriteEnum = {
+        idAuthor,
+        idUser
+    }
+    const response = await axios.post(`${baseURL}/AuthorFavorite/create`, authorFavouriteEnum, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    });
+    return response.data
+}
+
+export async function deleteAuthorFavourite(idUser, idAuthor, accessToken) {
+    const response = await axios.delete(`${baseURL}/AuthorFavorite?id_use=${idUser}&id_author=${idAuthor}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    });
+    return response.data
+}

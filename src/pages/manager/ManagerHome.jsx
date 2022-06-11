@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
@@ -25,6 +25,9 @@ import ManageArticle from '../../components/manager/ManageArticle'
 import ManageReader from '../../components/manager/ManageReader'
 import CategoryIcon from '@mui/icons-material/Category'
 import ManageCategory from '../../components/manager/ManageCategory'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const drawerWidth = 240
 
@@ -74,9 +77,36 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 function ManagerHome(props) {
+  const user = useSelector((state) => state.user)
+  let navigate = useNavigate()
   const theme = useTheme()
-  const [page, setPage] = React.useState('report')
-  const [open, setOpen] = React.useState(false)
+  const [page, setPage] = useState('report')
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (user.role > 1) {
+      toast.error('Người dùng không có quyền truy cập', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+      navigate('/')
+    } else {
+      toast.success(`xin chào: ${user.name}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
+  }, [])
 
   const handleDrawerOpen = () => {
     setOpen(true)

@@ -6,15 +6,21 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function CardArticle({ article }) {
+function CardArticle({ article, handleClose }) {
+  const navigate = useNavigate()
+  const handleClickArticle = () => {
+    if (handleClose) handleClose()
+    navigate(`/article/${article.idArticles}`)
+  }
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
+    <Card sx={{ maxWidth: 345 }} key={article.idArticles}>
+      <CardActionArea onClick={handleClickArticle}>
         <CardMedia
           component="img"
           height="200"
-          image={article.img}
+          image={article.image}
           alt="green iguana"
         />
         <CardContent>
@@ -30,7 +36,7 @@ function CardArticle({ article }) {
             gutterBottom
             sx={{ paddingY: '10px' }}
           >
-            {`By ${article.author}`}
+            {`Tác Giả: ${article.user.name}`}
           </Typography>
         </CardContent>
       </CardActionArea>

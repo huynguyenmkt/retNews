@@ -9,6 +9,22 @@ export async function getAllArticles() {
     });
     return response.data
 }
+export async function getTopRencentArticles() {
+    const response = await axios.get(`${baseURL}/Articles/getTopNew`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.data
+}
+export async function getArticlesByIdCategory(idCategory) {
+    const response = await axios.get(`${baseURL}/Articles/search_by_id_category?id_category=${idCategory}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.data
+}
 export async function getTopArticles() {
     const response = await axios.get(`${baseURL}/Articles/getTopView`, {
         headers: {

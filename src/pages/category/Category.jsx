@@ -1,7 +1,8 @@
 import { Box, Chip, Container, Divider, Grid } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import CardArticle from '../../components/article/CardArticle'
+import { getArticlesByIdCategory } from '../../services/articleService'
 
 const title = 'Proin eu nisl et arcu iaculis placerat sollicitudin ut est'
 const content =
@@ -15,12 +16,23 @@ const article = {
   author,
 }
 function Category(props) {
-  //   let { id } = useParams()
+  let { id, category } = useParams()
+  const [listArticle, setListArticle] = useState([])
+  //get Data
+  const getArticleByCategory = async () => {
+    const response = await getArticlesByIdCategory(id)
+    if (response.result) {
+      setListArticle(response.data)
+    }
+  }
+  useEffect(() => {
+    getArticleByCategory()
+  }, [id])
   return (
     <Container maxWidth="lg" sx={{ marginTop: '50px' }}>
       <Divider>
         <Chip
-          label="Category Travel"
+          label={category}
           sx={{
             fontFamily: '"Montserrat",sans-serif',
             fontSize: '1.75rem',
@@ -30,24 +42,11 @@ function Category(props) {
         />
       </Divider>
       <Grid container spacing={2} sx={{ marginY: '20px' }}>
-        <Grid item xs={4}>
-          <CardArticle article={article} />
-        </Grid>
-        <Grid item xs={4}>
-          <CardArticle article={article} />
-        </Grid>
-        <Grid item xs={4}>
-          <CardArticle article={article} />
-        </Grid>
-        <Grid item xs={4}>
-          <CardArticle article={article} />
-        </Grid>
-        <Grid item xs={4}>
-          <CardArticle article={article} />
-        </Grid>
-        <Grid item xs={4}>
-          <CardArticle article={article} />
-        </Grid>
+        {listArticle.map((article) => (
+          <Grid item xs={4}>
+            <CardArticle article={article} />
+          </Grid>
+        ))}
       </Grid>
     </Container>
   )

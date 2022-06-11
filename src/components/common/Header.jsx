@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -16,34 +16,53 @@ import { useDispatch, useSelector } from 'react-redux'
 import { delUser } from '../../features/user/userSlice'
 import Slider from 'react-slick'
 import CardArticle from '../article/CardArticle'
-
+import AccountBoxIcon from '@mui/icons-material/AccountBox'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
+import PeopleIcon from '@mui/icons-material/People'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import { getTopRencentArticles } from '../../services/articleService'
+import { getAllCategory } from '../../services/categoryService'
 const settings = {
   infinite: true,
   speed: 500,
   slidesToShow: 3,
   slidesToScroll: 3,
 }
-const title = 'Proin eu nisl et arcu iaculis placerat sollicitudin ut est'
-const content =
-  'Maecenas accumsan tortor ut velit pharetra mollis. Proin eu nisl et arcu iaculis placerat sollicitudin ut est. In fringilla dui dui.'
-const img = 'https://loremflickr.com/500/400'
-const author = 'David Hall'
-const article = {
-  title,
-  content,
-  img,
-  author,
-}
+
 function Header(props) {
   const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
   const isExitUser = Object.keys(user).length > 0
+  const [listRecentArticle, setListRecentArticle] = useState([])
+  const [listCategorys, setListCategorys] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null)
-
   const [anchorElNews, setAnchorElNews] = useState(null)
   const open = Boolean(anchorElNews)
+
+  const [anchorElCategory, setAnchorElCategory] = useState(null)
+  const openCategory = Boolean(anchorElCategory)
+
+  //get Data
+  const getRecentArticles = async () => {
+    const response = await getTopRencentArticles()
+    if (response.result) {
+      setListRecentArticle(response.data)
+    }
+  }
+  const getCategorys = async () => {
+    const response = await getAllCategory()
+    if (response.result) {
+      setListCategorys(response.data)
+    }
+  }
+  useEffect(() => {
+    getRecentArticles()
+    getCategorys()
+  }, [])
+
   const handleClick = (event) => {
     setAnchorElNews(event.currentTarget)
   }
@@ -56,6 +75,13 @@ function Header(props) {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
   }
+  const handleClickCategory = (event) => {
+    setAnchorElCategory(event.currentTarget)
+  }
+  const handleCloseCategory = (idCategory, title) => {
+    setAnchorElCategory(null)
+    navigate(`/category/${title}/${idCategory}`)
+  }
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null)
@@ -65,9 +91,11 @@ function Header(props) {
     setAnchorElUser(null)
   }
   const handleLogout = () => {
+    handleCloseUserMenu()
     dispatch(delUser())
     navigate('/login')
   }
+
   return (
     <AppBar position="relative" color="transparent">
       <Container maxWidth="lg">
@@ -108,18 +136,20 @@ function Header(props) {
             >
               <Link to={`/`} style={{ textDecoration: 'none' }}>
                 <MenuItem key="Home" onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">Home</Typography>
+                  <Typography textAlign="center">Trang chủ</Typography>
                 </MenuItem>
               </Link>
               <MenuItem key="News" onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">News</Typography>
+                <Typography textAlign="center">Bài viết mới nhất</Typography>
               </MenuItem>
               <MenuItem key="Category" onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">Category</Typography>
+                <Typography textAlign="center">Thể loại bài viết</Typography>
               </MenuItem>
               <Link to={`/contact`} style={{ textDecoration: 'none' }}>
                 <MenuItem key="Contact" onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">Contact</Typography>
+                  <Typography textAlign="center">
+                    Liên hệ với chúng tôi
+                  </Typography>
                 </MenuItem>
               </Link>
             </Menu>
@@ -152,7 +182,7 @@ function Header(props) {
                   },
                 }}
               >
-                Home
+                Trang chủ
               </Button>
             </Link>
 
@@ -170,12 +200,12 @@ function Header(props) {
                 },
               }}
             >
-              News
+              Bài viết mới
             </Button>
 
             <Button
               key="Category"
-              onClick={handleCloseNavMenu}
+              onClick={handleClickCategory}
               sx={{
                 my: 2,
                 color: 'black',
@@ -187,7 +217,7 @@ function Header(props) {
                 },
               }}
             >
-              Category
+              Thể loại
             </Button>
             <Link to={`/contact`} style={{ textDecoration: 'none' }}>
               <Button
@@ -204,7 +234,7 @@ function Header(props) {
                   },
                 }}
               >
-                Contact
+                Liên hệ với chúng tôi
               </Button>
             </Link>
           </Box>
@@ -234,12 +264,46 @@ function Header(props) {
                   onClose={handleCloseUserMenu}
                 >
                   <Link to={`/profile`} style={{ textDecoration: 'none' }}>
-                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">Profile</Typography>
+                    <MenuItem
+                      onClick={handleCloseUserMenu}
+                      sx={{ color: 'black' }}
+                    >
+                      <AccountBoxIcon sx={{ marginRight: '10px' }} />
+                      <Typography textAlign="center">
+                        Thông tin cá nhân
+                      </Typography>
                     </MenuItem>
                   </Link>
-                  <MenuItem onClick={handleLogout}>
-                    <Typography textAlign="center">Logout</Typography>
+                  <Link
+                    to={`/author-favourite`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <MenuItem
+                      onClick={handleCloseUserMenu}
+                      sx={{ color: 'black' }}
+                    >
+                      <PeopleIcon sx={{ marginRight: '10px' }} />
+                      <Typography textAlign="center">
+                        Danh sách tác giả yêu thích
+                      </Typography>
+                    </MenuItem>
+                  </Link>
+                  {user.role < 2 && (
+                    <Link to={`/manager`} style={{ textDecoration: 'none' }}>
+                      <MenuItem
+                        onClick={handleCloseUserMenu}
+                        sx={{ color: 'black' }}
+                      >
+                        <ManageAccountsIcon sx={{ marginRight: '10px' }} />
+                        <Typography textAlign="center">
+                          Trang quản lý
+                        </Typography>
+                      </MenuItem>
+                    </Link>
+                  )}
+                  <MenuItem onClick={handleLogout} sx={{ color: 'red' }}>
+                    <ExitToAppIcon sx={{ marginRight: '10px' }} />
+                    <Typography textAlign="center">Đăng xuất</Typography>
                   </MenuItem>
                 </Menu>
               </>
@@ -261,15 +325,39 @@ function Header(props) {
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
+        sx={{ backgroundColor: '#0000003d' }}
       >
         <Slider {...settings}>
-          <CardArticle article={article} />
-          <CardArticle article={article} />
-          <CardArticle article={article} />
-          <CardArticle article={article} />
-          <CardArticle article={article} />
-          <CardArticle article={article} />
+          {listRecentArticle.map((article) => {
+            return <CardArticle article={article} handleClose={handleClose} />
+          })}
         </Slider>
+      </Menu>
+
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          'aria-labelledby': 'fade-button',
+        }}
+        anchorEl={anchorElCategory}
+        open={openCategory}
+        onClose={handleCloseCategory}
+        PaperProps={{
+          style: {
+            maxHeight: 48 * 4.5,
+            width: '20ch',
+          },
+        }}
+      >
+        {listCategorys.map((category) => (
+          <MenuItem
+            onClick={() =>
+              handleCloseCategory(category.idCategory, category.title)
+            }
+          >
+            {category.title}
+          </MenuItem>
+        ))}
       </Menu>
     </AppBar>
   )

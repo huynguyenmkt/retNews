@@ -23,20 +23,23 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import AddCommentIcon from '@mui/icons-material/AddComment'
 import { blue, green } from '@mui/material/colors'
 import { getArticleById } from '../../services/articleService'
-import { getUserById } from '../../services/userService'
+import { createAuthorFavourite, getUserById } from '../../services/userService'
 import {
   createComment,
   deleteComment,
   editComment,
   getAllCommentByArticle,
 } from '../../services/commentService'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { getAllCategory } from '../../services/categoryService'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import { editUser } from '../../features/user/userSlice'
 function ArticleDetail(props) {
   const user = useSelector((state) => state.user)
+  const dispatch = useDispatch()
   let { id } = useParams()
   const [article, setArticle] = useState()
   const [comments, setComments] = useState([])
@@ -56,7 +59,7 @@ function ArticleDetail(props) {
     const data = await getArticleById(id)
     if (data.result) {
       let article = data.data
-      const user = await getUserById(article.idUser)
+      const user = article.user
       setArticle({ ...article, author: user })
     }
   }
@@ -108,6 +111,40 @@ function ArticleDetail(props) {
 
   const handleClose = () => {
     setOpen(false)
+  }
+  const handleClickAuthorFavourite = async () => {
+    // console.log(article.author)
+    const response = await createAuthorFavourite(
+      article.idUser,
+      user.idUser,
+      user.dataToken
+    )
+    if (response.result) {
+      toast.success(`${response.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+      const newListAuthorFavourite = [
+        ...user.listAuthorFavourite,
+        article.author,
+      ]
+      dispatch(editUser({ listAuthorFavourite: newListAuthorFavourite }))
+    } else {
+      toast.error(`${response.message}`, {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
   }
   const handleSubmit = async () => {
     const res = await createComment(
@@ -335,6 +372,15 @@ function ArticleDetail(props) {
           >
             Tác Giả
           </Typography>
+          <Button
+            color="error"
+            variant="outlined"
+            startIcon={<FavoriteIcon color="error" />}
+            sx={{ marginBottom: '10px' }}
+            onClick={handleClickAuthorFavourite}
+          >
+            Yêu thích
+          </Button>
           <Typography
             variant="h4"
             gutterBottom
