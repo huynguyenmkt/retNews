@@ -21,6 +21,7 @@ import {
   Fab,
   TextField,
   Tooltip,
+  Typography,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
@@ -76,6 +77,7 @@ function ManageCategory(props) {
         draggable: true,
         progress: undefined,
       })
+      setRefresh(!refresh)
     } else {
       toast.error(`[id: ${id}]: ${data.message}`, {
         position: 'top-center',
@@ -176,6 +178,9 @@ function ManageCategory(props) {
     <div
       style={{ height: 600, width: '100%', margin: 'auto', maxWidth: '570px' }}
     >
+      <Typography variant="caption" display="block" gutterBottom color="error">
+        *Chỉnh sửa tên thể loại trực tiếp trên bảng bên dưới
+      </Typography>
       <DataGrid
         rows={rows}
         columns={columns}

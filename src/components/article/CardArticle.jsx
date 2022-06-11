@@ -15,7 +15,7 @@ function CardArticle({ article, handleClose }) {
     navigate(`/article/${article.idArticles}`)
   }
   return (
-    <Card sx={{ maxWidth: 345 }} key={article.idArticles}>
+    <Card sx={{ maxWidth: 345 }}>
       <CardActionArea onClick={handleClickArticle}>
         <CardMedia
           component="img"

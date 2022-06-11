@@ -25,8 +25,8 @@ import { getAllCategory } from '../../services/categoryService'
 const settings = {
   infinite: true,
   speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 3,
+  slidesToShow: 4,
+  slidesToScroll: 4,
 }
 
 function Header(props) {
@@ -78,11 +78,13 @@ function Header(props) {
   const handleClickCategory = (event) => {
     setAnchorElCategory(event.currentTarget)
   }
-  const handleCloseCategory = (idCategory, title) => {
+  const handleCloseCategory = () => {
     setAnchorElCategory(null)
+  }
+  const handleChooseCategory = (idCategory, title) => {
+    handleCloseCategory()
     navigate(`/category/${title}/${idCategory}`)
   }
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null)
   }
@@ -329,7 +331,13 @@ function Header(props) {
       >
         <Slider {...settings}>
           {listRecentArticle.map((article) => {
-            return <CardArticle article={article} handleClose={handleClose} />
+            return (
+              <CardArticle
+                article={article}
+                handleClose={handleClose}
+                key={article.idArticles}
+              />
+            )
           })}
         </Slider>
       </Menu>
@@ -351,8 +359,9 @@ function Header(props) {
       >
         {listCategorys.map((category) => (
           <MenuItem
+            key={category.idCategory}
             onClick={() =>
-              handleCloseCategory(category.idCategory, category.title)
+              handleChooseCategory(category.idCategory, category.title)
             }
           >
             {category.title}

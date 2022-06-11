@@ -1,12 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Divider, Grid, Typography, Stack } from '@mui/material'
 import SliderItem from '../popularNewsHeader/SliderItem'
 import CardRecentPost from './cardRecentPost/CardRecentPost'
+import { getTopRencentArticles } from '../../services/articleService'
 const styleCartPost = {
   height: '242px',
   titleType: 'h6',
 }
 function RecentPost(props) {
+  const [listArticle, setListArticle] = useState([])
+
+  //get Data
+  const getRecentAricle = async () => {
+    const response = await getTopRencentArticles()
+    if (response.result) {
+      setListArticle(response.data)
+    }
+  }
+  useEffect(() => {
+    getRecentAricle()
+  }, [])
+  // console.log(listArticle)
   return (
     <div>
       <Divider textAlign="left">
@@ -16,39 +30,43 @@ function RecentPost(props) {
           component="div"
           sx={{ fontWeight: '700' }}
         >
-          Recent Post
+          Những bài viết mới nhất
         </Typography>
       </Divider>
-      <Grid container spacing={2} justifyContent="space-around">
-        <Grid item xs={5}>
-          <Box sx={{ overflow: 'hidden' }}>
-            <SliderItem
-              backgroundImage="https://loremflickr.com/cache/resized/4012_4682124091_8a2ed151bb_z_600_400_nofilter.jpg"
-              title="Barack Obama and Family Visit borobudur temple enjoy holiday indonesia."
-              author="david hall"
-              stylePost={styleCartPost}
-            />
-          </Box>
-          <Stack>
-            <CardRecentPost />
-            <CardRecentPost />
-          </Stack>
+      {listArticle.length > 0 && (
+        <Grid container spacing={2} justifyContent="space-around">
+          <Grid item xs={5}>
+            <Box sx={{ overflow: 'hidden' }}>
+              <SliderItem
+                backgroundImage={listArticle[0].image}
+                title={listArticle[0].title}
+                author={listArticle[0].user.name}
+                stylePost={styleCartPost}
+                idArticle={listArticle[0].idArticles}
+              />
+            </Box>
+            <Stack>
+              <CardRecentPost article={listArticle[2]} />
+              <CardRecentPost article={listArticle[3]} />
+            </Stack>
+          </Grid>
+          <Grid item xs={5}>
+            <Box sx={{ overflow: 'hidden' }}>
+              <SliderItem
+                backgroundImage={listArticle[1].image}
+                title={listArticle[1].title}
+                author={listArticle[1].user.name}
+                stylePost={styleCartPost}
+                idArticle={listArticle[1].idArticles}
+              />
+            </Box>
+            <Stack>
+              <CardRecentPost article={listArticle[4]} />
+              <CardRecentPost article={listArticle[5]} />
+            </Stack>
+          </Grid>
         </Grid>
-        <Grid item xs={5}>
-          <Box sx={{ overflow: 'hidden' }}>
-            <SliderItem
-              backgroundImage="https://loremflickr.com/cache/resized/1196_3167660551_738464e7e3_c_600_400_nofilter.jpg"
-              title="Barack Obama and Family Visit borobudur temple enjoy holiday indonesia."
-              author="david hall"
-              stylePost={styleCartPost}
-            />
-          </Box>
-          <Stack>
-            <CardRecentPost />
-            <CardRecentPost />
-          </Stack>
-        </Grid>
-      </Grid>
+      )}
     </div>
   )
 }

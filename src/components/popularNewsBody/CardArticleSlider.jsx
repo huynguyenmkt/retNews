@@ -4,23 +4,33 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import { CardActionArea } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-function CardArticleSlider(props) {
+function CardArticleSlider({ article }) {
+  const navigate = useNavigate()
+  const handleClickArticle = () => {
+    navigate(`/article/${article.idArticles}`)
+  }
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
         <CardMedia
           component="img"
           height="180"
-          image="https://loremflickr.com/cache/resized/65535_51560411674_98a9701a47_z_500_400_nofilter.jpg"
+          image={article.image}
           alt="green iguana"
         />
         <CardContent>
-          <Typography gutterBottom variant="h6" component="div">
-            by Lizard
+          <Typography
+            gutterBottom
+            variant="h6"
+            component="div"
+            onClick={handleClickArticle}
+          >
+            {`Tác giả: ${article.user.name}`}
           </Typography>
-          <Typography variant="h4">
-            Maecenas accumsan tortor ut velit pharetra mollis.
+          <Typography variant="h4" onClick={handleClickArticle}>
+            {article.title}
           </Typography>
         </CardContent>
       </CardActionArea>

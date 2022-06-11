@@ -28,7 +28,8 @@ import ManageCategory from '../../components/manager/ManageCategory'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-
+import { Avatar } from '@mui/material'
+import HomeIcon from '@mui/icons-material/Home'
 const drawerWidth = 240
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -81,7 +82,7 @@ function ManagerHome(props) {
   let navigate = useNavigate()
   const theme = useTheme()
   const [page, setPage] = useState('report')
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
 
   useEffect(() => {
     if (user.role > 1) {
@@ -120,7 +121,14 @@ function ManagerHome(props) {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ backgroundColor: '#a30000' }}>
+        <Toolbar
+          sx={{
+            backgroundColor: '#a30000',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -133,6 +141,27 @@ function ManagerHome(props) {
           <Typography variant="h6" noWrap component="div">
             Manager RetNews
           </Typography>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', columnGap: '10px' }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Typography variant="button" display="block" gutterBottom>
+                {`Hi! ${user.name}`}
+              </Typography>
+              <Typography variant="caption" display="block" gutterBottom>
+                {user.role === 0 ? '(admin)' : '(writer)'}
+              </Typography>
+            </Box>
+
+            <Avatar alt="avatar.jpg" src={user.avata} />
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -159,6 +188,14 @@ function ManagerHome(props) {
         </DrawerHeader>
         <Divider />
         <List>
+          <ListItem onClick={() => navigate('/')} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Trang chủ" />
+            </ListItemButton>
+          </ListItem>
           <ListItem onClick={() => setPage('report')} disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -188,7 +225,7 @@ function ManagerHome(props) {
               <ListItemIcon>
                 <SupervisedUserCircleIcon />
               </ListItemIcon>
-              <ListItemText primary="Quản lý người đọc" />
+              <ListItemText primary="Quản lý người dùng" />
             </ListItemButton>
           </ListItem>
         </List>
