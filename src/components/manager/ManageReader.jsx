@@ -29,10 +29,10 @@ import {
 } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import {
-  editRole,
   getAllUser,
   lockAccount,
   singup,
+  editRole,
 } from '../../services/userService'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
@@ -121,7 +121,12 @@ function ManageReader(props) {
       })
     } else {
       const idUser = values.row.idUser
-      const response = await editRole(user.idUser, idUser, newRole)
+      const response = await editRole(
+        user.idUser,
+        idUser,
+        newRole,
+        user.dataToken
+      )
       if (response.result) {
         toast.success(`${response.message}`, {
           position: 'top-center',

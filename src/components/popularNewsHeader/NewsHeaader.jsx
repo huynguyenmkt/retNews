@@ -41,7 +41,7 @@ function NewsHeaader(props) {
   }, [])
   // console.log(topArticles)
   return (
-    <Container sx={{ mt: 4, mb: 4 }}>
+    <Container sx={{ marginTop: '90px' }}>
       {topArticles.length > 0 && (
         <Box>
           <Grid container spacing={2}>

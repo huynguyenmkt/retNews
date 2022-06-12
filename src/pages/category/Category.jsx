@@ -29,7 +29,7 @@ function Category(props) {
     getArticleByCategory()
   }, [id])
   return (
-    <Container maxWidth="lg" sx={{ marginTop: '50px' }}>
+    <Container maxWidth="lg" sx={{ marginTop: '90px' }}>
       <Divider>
         <Chip
           label={category}

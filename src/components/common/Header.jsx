@@ -22,6 +22,10 @@ import PeopleIcon from '@mui/icons-material/People'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import { getTopRencentArticles } from '../../services/articleService'
 import { getAllCategory } from '../../services/categoryService'
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
+import HistoryIcon from '@mui/icons-material/History'
+import { Divider, InputBase, Paper } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 const settings = {
   infinite: true,
   speed: 500,
@@ -35,6 +39,7 @@ function Header(props) {
   const navigate = useNavigate()
 
   const isExitUser = Object.keys(user).length > 0
+  const [search, setSearch] = useState('')
   const [listRecentArticle, setListRecentArticle] = useState([])
   const [listCategorys, setListCategorys] = useState([])
   const [anchorElNav, setAnchorElNav] = useState(null)
@@ -97,9 +102,22 @@ function Header(props) {
     dispatch(delUser())
     navigate('/login')
   }
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (search.trim() !== '') {
+      navigate(`/article/search/${search}`)
+    }
+  }
 
+  const handleChangeSearch = (e) => {
+    setSearch(e.target.value)
+  }
   return (
-    <AppBar position="relative" color="transparent">
+    <AppBar
+      position="fixed"
+      color="transparent"
+      sx={{ backgroundColor: '#ebebeb' }}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -107,6 +125,28 @@ function Header(props) {
               <img src="/logo.jpg" alt="logo.jpg" />
             </Link>
           </Box>
+          <Paper
+            component="form"
+            sx={{
+              marginLeft: '20px',
+              p: '2px 4px',
+              display: 'flex',
+              alignItems: 'center',
+              width: 400,
+            }}
+            onSubmit={handleSearch}
+          >
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Tìm kiếm"
+              value={search}
+              onChange={handleChangeSearch}
+            />
+            <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          </Paper>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -288,6 +328,29 @@ function Header(props) {
                       <Typography textAlign="center">
                         Danh sách tác giả yêu thích
                       </Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link
+                    to={`/change-password`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <MenuItem
+                      onClick={handleCloseUserMenu}
+                      sx={{ color: 'black' }}
+                    >
+                      <ChangeCircleIcon sx={{ marginRight: '10px' }} />
+                      <Typography textAlign="center">
+                        Thay đổi mật khẩu
+                      </Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link to={`/history`} style={{ textDecoration: 'none' }}>
+                    <MenuItem
+                      onClick={handleCloseUserMenu}
+                      sx={{ color: 'black' }}
+                    >
+                      <HistoryIcon sx={{ marginRight: '10px' }} />
+                      <Typography textAlign="center">Lịch sử</Typography>
                     </MenuItem>
                   </Link>
                   {user.role < 2 && (

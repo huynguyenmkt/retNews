@@ -110,21 +110,54 @@ export async function lockAccount(idUser, accessToken) {
     });
     return response.data
 }
-// export async function editRole(idAdmin, idUser, role, accessToken) {
-//     const response = await axios.put(`${baseURL}/User/EditRole`, {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': 'Bearer ' + accessToken
-//         }
-//     });
-//     return response.data
-// }
-export async function editRole(accessToken) {
-    const response = await axios.put(`${baseURL}/User/EditRole`, {
+export async function editRole(idAmin, idUser, role, accessToken) {
+    const response = await axios.put(`https://localhost:44327/api/User/EditRole?id_admin=${idAmin}&id_user=${idUser}&role=${role}`, {
+        params: {
+            id_admin: idAmin,
+            id_user: idUser,
+            role: role
+        }
+    }, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + accessToken
         }
-    })
+    });
+    return response.data
+}
+
+export async function editPassword(userName, oldPassword, newPassword, accessToken) {
+    const response = await axios.put(`${baseURL}/User/EditPassword?username=${userName}&oldPass=${oldPassword}&newPass=${newPassword}`, {
+        params: {
+            username: userName,
+            oldPass: oldPassword,
+            newPass: newPassword
+        }
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    });
+    return response.data
+}
+
+//history
+export async function getAllHistoryByIdUser(id, accessToken) {
+    const response = await axios.get(`https://localhost:44327/api/User/histoty/${id}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    });
+    return response.data
+}
+
+export async function deleteAllHistoryOfUser(idUser) {
+    const response = await axios.delete(`${baseURL}/History/deleteAllHistoryOfUser/${idUser}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
     return response.data
 }

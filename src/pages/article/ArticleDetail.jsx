@@ -22,7 +22,7 @@ import TelegramIcon from '@mui/icons-material/Telegram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import AddCommentIcon from '@mui/icons-material/AddComment'
 import { blue, green } from '@mui/material/colors'
-import { getArticleById } from '../../services/articleService'
+import { createHistory, getArticleById } from '../../services/articleService'
 import { createAuthorFavourite, getUserById } from '../../services/userService'
 import {
   createComment,
@@ -94,6 +94,10 @@ function ArticleDetail(props) {
       setListCategory(newListCategory)
     }
   }
+  const addHistory = async (idArticle) => {
+    const response = await createHistory(user.idUser, idArticle, user.dataToken)
+    // console.log(response)
+  }
   useEffect(() => {
     if (article) {
       getComments(article.idArticles)
@@ -103,6 +107,7 @@ function ArticleDetail(props) {
 
   useEffect(() => {
     getArticle(id)
+    addHistory(id)
   }, [id])
   //handles
   const handleClickOpen = () => {
@@ -233,7 +238,7 @@ function ArticleDetail(props) {
     }
   }
   return (
-    <Container maxWidth="lg" sx={{ marginTop: '50px' }}>
+    <Container maxWidth="lg" sx={{ marginTop: '90px' }}>
       {/* title */}
       <h1
         style={{

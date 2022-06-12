@@ -96,7 +96,7 @@ function Profile() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        mt: 3,
+        mt: '90px',
         mb: 3,
       }}
     >

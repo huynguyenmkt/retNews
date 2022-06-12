@@ -123,7 +123,7 @@ function SignUp(props) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        mt: 3,
+        marginTop: '90px',
         mb: 3,
       }}
     >
