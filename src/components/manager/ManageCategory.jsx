@@ -162,7 +162,7 @@ function ManageCategory(props) {
   const handleEditCategory = (value) => {
     changeCategory(value.id, value.value)
     // getCategorys()
-    console.log(value)
+    // console.log(value)
   }
   const handleClickOpen = () => {
     setOpen(true)
@@ -182,6 +182,7 @@ function ManageCategory(props) {
         *Chỉnh sửa tên thể loại trực tiếp trên bảng bên dưới
       </Typography>
       <DataGrid
+        autoHeight={true}
         rows={rows}
         columns={columns}
         pageSize={8}

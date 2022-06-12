@@ -3,7 +3,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import CssBaseline from '@mui/material/CssBaseline'
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
+import MuiAppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import List from '@mui/material/List'
 import Typography from '@mui/material/Typography'
@@ -16,7 +16,6 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
 import BarChartIcon from '@mui/icons-material/BarChart'
 import NewspaperIcon from '@mui/icons-material/Newspaper'
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle'
@@ -81,7 +80,7 @@ function ManagerHome(props) {
   const user = useSelector((state) => state.user)
   let navigate = useNavigate()
   const theme = useTheme()
-  const [page, setPage] = useState('report')
+  const [page, setPage] = useState('manageArticle')
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
@@ -107,7 +106,7 @@ function ManagerHome(props) {
         progress: undefined,
       })
     }
-  }, [])
+  }, [user])
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -196,14 +195,6 @@ function ManagerHome(props) {
               <ListItemText primary="Trang chủ" />
             </ListItemButton>
           </ListItem>
-          <ListItem onClick={() => setPage('report')} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <BarChartIcon />
-              </ListItemIcon>
-              <ListItemText primary="Thống kê" />
-            </ListItemButton>
-          </ListItem>
           <ListItem onClick={() => setPage('manageArticle')} disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -220,14 +211,26 @@ function ManagerHome(props) {
               <ListItemText primary="Quản lý thể loại bài viết" />
             </ListItemButton>
           </ListItem>
-          <ListItem onClick={() => setPage('manageReader')} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <SupervisedUserCircleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Quản lý người dùng" />
-            </ListItemButton>
-          </ListItem>
+          {user.role === 0 && (
+            <>
+              <ListItem onClick={() => setPage('manageReader')} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <SupervisedUserCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Quản lý người dùng" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem onClick={() => setPage('report')} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <BarChartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Thống kê" />
+                </ListItemButton>
+              </ListItem>
+            </>
+          )}
         </List>
         <Divider />
       </Drawer>

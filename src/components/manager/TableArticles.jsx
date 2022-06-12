@@ -81,6 +81,7 @@ function TableArticles({ onChangeSelected, refreshTable }) {
       }}
     >
       <DataGrid
+        autoHeight={true}
         rows={rows}
         columns={columns}
         pageSize={8}

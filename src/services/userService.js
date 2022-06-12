@@ -27,7 +27,7 @@ export async function singup(newUser) {
         avata: newUser.avatar,
         username: newUser.userName,
         password: newUser.password,
-        role: 2
+        role: newUser.role ? newUser.role : 2
     }
     const response = await axios.post(`${baseURL}/User/CreateUser`, userEnum, {
         headers: {
@@ -98,5 +98,33 @@ export async function deleteAuthorFavourite(idUser, idAuthor, accessToken) {
             'Authorization': 'Bearer ' + accessToken
         }
     });
+    return response.data
+}
+
+export async function lockAccount(idUser, accessToken) {
+    const response = await axios.delete(`${baseURL}/User/LockAccount/${idUser}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    });
+    return response.data
+}
+// export async function editRole(idAdmin, idUser, role, accessToken) {
+//     const response = await axios.put(`${baseURL}/User/EditRole`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': 'Bearer ' + accessToken
+//         }
+//     });
+//     return response.data
+// }
+export async function editRole(accessToken) {
+    const response = await axios.put(`${baseURL}/User/EditRole`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+        }
+    })
     return response.data
 }
