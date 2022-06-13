@@ -107,7 +107,9 @@ function ArticleDetail(props) {
 
   useEffect(() => {
     getArticle(id)
-    addHistory(id)
+    if (isExitUser) {
+      addHistory(id)
+    }
   }, [id])
   //handles
   const handleClickOpen = () => {
