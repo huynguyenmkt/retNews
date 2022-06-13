@@ -17,6 +17,7 @@ import AuthorFavourite from './pages/author/AuthorFavourite'
 import ChangePassword from './pages/login/ChangePassword'
 import History from './pages/user/History'
 import Search from './pages/article/Search'
+import ForgotPassword from './pages/login/ForgotPassword'
 function App() {
   // const user = useSelector(state => state.user)
   // getAuthorFavorite(user.dataToken)
@@ -31,6 +32,7 @@ function App() {
         <Route path="/article/:id" element={<ArticleDetail />} />
         <Route path="/category/:category/:id" element={<Category />} />
         <Route path="/article/search/:keyword" element={<Search />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/profile"
           element={

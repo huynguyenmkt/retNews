@@ -9,7 +9,7 @@ function AuthorFavourite(props) {
     user.listAuthorFavourite
   )
   return (
-    <Container maxWidth="md" sx={{ marginTop: '90px' }}>
+    <Container maxWidth="md" sx={{ marginTop: '90px', minHeight: '600px' }}>
       <Divider>
         <Typography
           variant="h3"

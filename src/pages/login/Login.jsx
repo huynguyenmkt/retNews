@@ -121,6 +121,11 @@ function Login() {
             &nbsp; Đăng ký
           </Link>
         </Box>
+        <Box sx={{ display: 'flex' }}>
+          <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
+            Quên mật khẩu?
+          </Link>
+        </Box>
         <Button
           variant="contained"
           color="error"

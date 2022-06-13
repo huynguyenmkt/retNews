@@ -45,12 +45,16 @@ const renderCustomizedLabel = ({
     </text>
   )
 }
-// const data3 = [
-//   { name: 'Group A', value: 400 },
-//   { name: 'Group B', value: 300 },
-//   { name: 'Group C', value: 300 },
-//   { name: 'Group D', value: 200 },
-// ]
+function compare(a, b) {
+  if (a.date < b.date) {
+    return -1
+  }
+  if (a.date > b.date) {
+    return 1
+  }
+  // a must be equal to b
+  return 0
+}
 const COLORS = ['#fb7f4b', '#2b7cff']
 function Report(props) {
   const [listArticle, setListArticle] = useState([])
@@ -94,12 +98,13 @@ function Report(props) {
     for (const article of listArticle) {
       const index = summary.findIndex((item) => item.date === article.date)
       if (index > -1) {
-        summary[index].sum += 1
+        summary[index].article += 1
         summary[index].views += article.views
       } else {
-        summary.push({ date: article.date, sum: 1, views: article.views })
+        summary.push({ date: article.date, article: 1, views: article.views })
       }
     }
+    summary.sort(compare)
     setData(summary)
   }
   const summaryGenderUser = (listUser) => {
@@ -158,7 +163,7 @@ function Report(props) {
             <Legend />
             <Line
               type="monotone"
-              dataKey="sum"
+              dataKey="article"
               stroke="#ff0000"
               strokeWidth={2}
             />

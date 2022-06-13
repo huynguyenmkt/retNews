@@ -12,12 +12,13 @@ import {
   Input,
 } from '@mui/material'
 import { toast } from 'react-toastify'
-import { edit, login } from '../../services/userService'
+import { edit } from '../../services/userService'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { addUser, editUser } from '../../features/user/userSlice'
+import { editUser } from '../../features/user/userSlice'
 import { grey } from '@mui/material/colors'
 import { getImageUploaded } from '../../services/imageService'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 function Profile() {
   const user = useSelector((state) => state.user)
@@ -32,6 +33,7 @@ function Profile() {
     userName: user.username,
   })
   const [imageSelected, setImageSelected] = useState()
+  const [loading, setLoading] = useState(false)
   //   console.log(values)
   //handle
   const handleChange = (prop) => (event) => {
@@ -72,6 +74,7 @@ function Profile() {
         username: values.userName,
       }
       dispatch(editUser(newUser))
+      // setLoading(false)
     } else {
       toast.error(data.message, {
         position: 'top-center',
@@ -82,10 +85,13 @@ function Profile() {
         draggable: true,
         progress: undefined,
       })
+      // setLoading(false)
     }
+    setLoading(false)
   }
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true)
     editNewUser()
   }
   return (
@@ -212,14 +218,15 @@ function Profile() {
             justifyContent: 'space-around',
           }}
         >
-          <Button
+          <LoadingButton
             variant="contained"
             color="error"
             sx={{ m: 4, width: 0.5, alignSelf: 'center' }}
             type="submit"
+            loading={loading}
           >
             Cập nhật
-          </Button>
+          </LoadingButton>
           <Button
             variant="contained"
             sx={{

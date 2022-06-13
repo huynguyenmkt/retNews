@@ -161,3 +161,13 @@ export async function deleteAllHistoryOfUser(idUser) {
     });
     return response.data
 }
+
+//forgot password
+export async function forgotPassword(email) {
+    const response = await axios.post(`${baseURL}/User/forgotPassword?email=${email}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.data
+}

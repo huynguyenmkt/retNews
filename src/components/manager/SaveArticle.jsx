@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { getImageUploaded } from '../../services/imageService'
 import { getAllCategory } from '../../services/categoryService'
+import LoadingButton from '@mui/lab/LoadingButton'
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -43,6 +44,7 @@ function SaveArticle({ onBack, idArticle }) {
     image: '',
     listCategory: [],
   })
+  const [loading, setLoading] = useState(false)
   const [imageSelected, setImageSelected] = useState()
   const [selectedCategory, setSelectedCategory] = useState([])
   const [refresh, setRefresh] = useState(false)
@@ -94,6 +96,7 @@ function SaveArticle({ onBack, idArticle }) {
   //handle
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     if (imageSelected || article.image) {
       let data
       let newArticle = { ...article }
@@ -117,8 +120,10 @@ function SaveArticle({ onBack, idArticle }) {
           draggable: true,
           progress: undefined,
         })
+        setLoading(false)
         onBack()
       } else {
+        setLoading(false)
         toast.error(data.message, {
           position: 'top-center',
           autoClose: 3000,
@@ -140,6 +145,7 @@ function SaveArticle({ onBack, idArticle }) {
         progress: undefined,
       })
     }
+    setLoading(false)
   }
   const handleChangeArticle = (prop) => (event) => {
     setArticle({ ...article, [prop]: event.target.value })
@@ -290,7 +296,7 @@ function SaveArticle({ onBack, idArticle }) {
               justifyContent: 'space-around',
             }}
           >
-            <Button
+            <LoadingButton
               variant="contained"
               startIcon={<SaveAsIcon />}
               sx={{
@@ -301,9 +307,10 @@ function SaveArticle({ onBack, idArticle }) {
                 },
               }}
               type="submit"
+              loading={loading}
             >
               Lưu
-            </Button>
+            </LoadingButton>
             <Button
               variant="contained"
               endIcon={<CancelPresentationIcon />}
