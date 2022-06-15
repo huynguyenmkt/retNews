@@ -86,6 +86,7 @@ function SignUp(props) {
           const newUser = {
             ...response.dataUser,
             dataToken: response.dataToken,
+            listAuthorFavourite: response.listAuthorFavourite,
           }
           dispatch(addUser(newUser))
           navigate('/')
